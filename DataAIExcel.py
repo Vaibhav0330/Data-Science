@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
 import openai
-from config import OPENAI_API_KEY
+#from config import OPENAI_API_KEY
 
 # Set OpenAI API key
-openai.api_key = OPENAI_API_KEY
+#openai.api_key = OPENAI_API_KEY
 
 # Function to display basic statistics
 def display_basic_statistics(df):
