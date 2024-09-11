@@ -1,0 +1,5 @@
+- 👋 Hi, I’m @Vaibhav
+- 👀 I’m interested in Data science domain roles
+- 🌱 I’m currently learning Management and Information System @ Katz graduate school of business
+- 📫 How to reach me mail - vaibhav.parmarms@gmail.com
+- 😄 Pronouns: he/him
