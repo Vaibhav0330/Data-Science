@@ -1,4 +1,4 @@
-seaborn
+seaborn==0.12.2  # or another stable version
 pandas
 matplotlib
 plotly
