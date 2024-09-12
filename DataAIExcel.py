@@ -4,13 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.preprocessing import LabelEncoder
-import openai
-#from config import OPENAI_API_KEY
+import re  # Import regex module
 
-
-
-# Set OpenAI API key
-#openai.api_key = OPENAI_API_KEY
 
 # Function to display basic statistics
 def display_basic_statistics(df):
@@ -121,73 +116,66 @@ def encode_categorical(df):
     else:
         st.info("No categorical columns found.")
 
-# Function to get response from OpenAI based on the uploaded file
-#'''def get_openai_response(query, df):
-#    try:
-#        # Create a summary of the dataframe to provide context
-#        summary = df.describe(include='all').to_string()
-#        st.write("Data Summary for Context:")
-#        st.write(summary)
-#
-#        # Prepare the prompt with data summary and query
-#        prompt = f"Based on the following data summary:\n\n{summary}\n\nAnswer the following question:\n{query}"
-#
-#        response = openai.ChatCompletion.create(
-#            model="gpt-4-turbo",  # Ensure this model is available to you
-#            messages=[
-#                {"role": "user", "content": prompt}
-#            ],
-#            max_tokens=150
-#        )
-#        return response.choices[0].message['content'].strip()
-#    except Exception as e:
-#        st.error(f"OpenAI API Error: {e}")
-#        return None
+# Function to store email to session state and log it to a file
+def store_email(email):
+    if "user_email" not in st.session_state:
+        st.session_state['user_email'] = email  # Store in session state
+
+    # Write the email to a file for persistent storage
+    with open("email_log.txt", "a") as file:
+        file.write(email + "\n")
+
+# Function to validate email format
+def is_valid_email(email):
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email)
 
 # Title of the app
 st.title("Data Analysis")
 
-# Sidebar for file upload
-st.sidebar.header("Upload Data File")
-uploaded_file = st.sidebar.file_uploader("Choose a CSV or Excel file", type=["csv", "xlsx", "xls"])
+# Sidebar to input email before uploading file
+email = st.sidebar.text_input("Enter your email")
 
-if uploaded_file is not None:
-    try:
-        if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file)
-        else:
-            df = pd.read_excel(uploaded_file)
+if email:  # If the email is entered
+    if is_valid_email(email):
+        st.sidebar.success(f"Valid Email entered: {email}")
 
-        st.subheader("Data Preview")
-        st.dataframe(df)
+        # Store the email
+        store_email(email)
 
-        # Display basic statistics
-        display_basic_statistics(df)
+        # Sidebar for file upload
+        st.sidebar.header("Upload Data File")
+        uploaded_file = st.sidebar.file_uploader("Choose a CSV or Excel file", type=["csv", "xlsx", "xls"])
 
-        # Handle missing data
-        if st.sidebar.checkbox("Show Missing Data"):
-            st.subheader("Missing Data")
-            st.write(df.isnull().sum())
+        if uploaded_file is not None:
+            try:
+                if uploaded_file.name.endswith(".csv"):
+                    df = pd.read_csv(uploaded_file)
+                else:
+                    df = pd.read_excel(uploaded_file)
 
-        # Visualize data
-        if st.sidebar.checkbox("Visualize Data"):
-            visualize_data(df)
+                st.subheader("Data Preview")
+                st.dataframe(df)
 
-        # Encode categorical variables
-        if st.sidebar.checkbox("Encode Categorical Variables"):
-            encode_categorical(df)
+                # Display basic statistics
+                display_basic_statistics(df)
 
-        # Custom Analysis
-        #st.sidebar.subheader("Custom Analysis")
-        #custom_query = st.sidebar.text_area("Enter a custom query")
-        #if custom_query:
-            #st.subheader("Custom Analysis Result")
-            #response = get_openai_response(custom_query, df)
-            #if response:
-                #st.write(response)
+                # Handle missing data
+                if st.sidebar.checkbox("Show Missing Data"):
+                    st.subheader("Missing Data")
+                    st.write(df.isnull().sum())
 
-    except Exception as e:
-        st.error(f"Error loading file: {e}")
+                # Visualize data
+                if st.sidebar.checkbox("Visualize Data"):
+                    visualize_data(df)
+
+                # Encode categorical variables
+                if st.sidebar.checkbox("Encode Categorical Variables"):
+                    encode_categorical(df)
+
+            except Exception as e:
+                st.error(f"Error loading file: {e}")
+    else:
+        st.sidebar.error("Please enter a valid email address.")
 else:
-    st.info("Please upload a data file.")
-    
+    st.warning("Please enter your email to proceed.")
