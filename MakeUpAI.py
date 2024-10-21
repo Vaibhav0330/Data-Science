@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import cv2
 import numpy as np
 import mediapipe as mp
@@ -258,4 +257,4 @@ if uploaded_file is not None:
             st.image(img_with_makeup, caption='Image with Makeup', use_column_width=True)
     else:
         st.write("No face detected. Please upload a clear image with a visible face.")
->>>>>>> c32bec0d05748ce4e44e84a569e857d36ed2696d
+
