@@ -158,4 +158,7 @@ elif mode == "Webcam":
                 # Display the processed frame in Streamlit
                 placeholder.image(processed_frame, channels="BGR", use_column_width=True)
 
+
+
+
             cap.release()
